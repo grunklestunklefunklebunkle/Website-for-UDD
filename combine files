@@ -1,0 +1,29 @@
+ <div class="contact-info-section" id="contact-info">
+                <h2>📋 Contact Information</h2>
+
+                <div class="contact-card">
+                    <div class="contact-label">📍 Address</div>
+                    <div class="contact-value">Pantal, Arellano St. Dagupan City</div>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-label">📱 Phone Number</div>
+                    <div class="contact-value">
+                        <a href="tel:+639948384423">+63 994 838 4423</a>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-label">📧 Email Address</div>
+                    <div class="contact-value">
+                        <a href="mailto:dreamwaver@gmail.com">dreamwaver@gmail.com</a>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-label">🌐 Website</div>
+                    <div class="contact-value">
+                        <a href="https://www.dreamwaver.com" target="_blank">www.dreamwaver.com</a>
+                    </div>
+                </div>
+            </div>
