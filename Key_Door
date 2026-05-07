@@ -1,0 +1,277 @@
+import pygame
+import sys
+import random
+
+# Initialize Pygame
+pygame.init()
+
+# Constants
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 700
+FPS = 60
+
+# Colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GRAY = (128, 128, 128)
+DARK_GRAY = (64, 64, 64)
+GOLD = (255, 215, 0)
+RED = (255, 100, 100)
+GREEN = (100, 255, 100)
+BLUE = (100, 150, 255)
+BROWN = (100, 60, 15)
+
+class Key_Door:
+    def __init__(self):
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("🔑 Key & Door Puzzle Game")
+        self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font(None, 46)
+        self.small_font = pygame.font.Font(None, 26)
+        self.tiny_font = pygame.font.Font(None, 20)
+        
+        # Game state
+        self.level = 1
+        self.max_levels = 250
+        self.inventory = []
+        self.game_won = False
+        self.level_complete = False
+        
+        # Level data
+        self.reset_level()
+        
+        # Sound effects (optional - pygame.mixer)
+        # pygame.mixer.init()
+    
+    def reset_level(self):
+        """Reset for new level"""
+        self.doors = []
+        self.keys = []
+        self.obstacles = []
+        self.level_complete = False
+        
+        # Generate level layout
+        self.generate_level()
+    
+    def generate_level(self):
+        """Procedurally generate puzzle for current level"""
+        # Doors (matching key color)
+        door_colors = [GOLD, RED, GREEN, BLUE][:self.level + 1]
+        for i, color in enumerate(door_colors):
+            door_x = 100 + i * 200
+            self.doors.append({
+                'rect': pygame.Rect(door_x, 400, 120, 200),
+                'color': color,
+                'unlocked': False,
+                'key_id': i
+            })
+        
+        # Keys (scattered around)
+        key_positions = [
+            (200, 100), (500, 150), (750, 80), (350, 200), (600, 250),
+            (150, 300), (800, 320)
+        ]
+        for i in range(len(self.doors)):
+            pos = key_positions[i]
+            self.keys.append({
+                'rect': pygame.Rect(pos[0], pos[1], 50, 50),
+                'color': self.doors[i]['color'],
+                'key_id': i,
+                'collected': False
+            })
+        
+        # Obstacles (increase with level)
+        for _ in range(self.level * 2):
+            obs_x = random.randint(50, 900)
+            obs_y = random.randint(450, 650)
+            self.obstacles.append(pygame.Rect(obs_x, obs_y, 80, 40))
+    
+    def draw_background(self):
+        """Draw room puzzle background"""
+        # Doors background
+        pygame.draw.rect(self.screen, GOLD, (0, 500, SCREEN_WIDTH, 200))
+        # Guard
+        pygame.draw.rect(self.screen, DARK_GRAY, (0, 0, 20, SCREEN_HEIGHT))
+        pygame.draw.rect(self.screen, DARK_GRAY, (SCREEN_WIDTH-20, 0, 20, SCREEN_HEIGHT))
+    
+    def draw_key(self, key, x, y):
+        """Draw key"""
+        # Key head
+        pygame.draw.ellipse(self.screen, key['color'], (x+5, y+5, 40, 30))
+        pygame.draw.rect(self.screen, key['color'], (x+15, y+20, 20, 15))
+        # Key shaft
+        pygame.draw.rect(self.screen, GRAY, (x+35, y+15, 25, 20))
+        # Teeth
+        for i in range(3):
+            pygame.draw.rect(self.screen, GRAY, (x+45, y+15+i*5, 8, 4))
+    
+    def draw_door(self, door):
+        """Draw fancy door"""
+        rect = door['rect']
+        color = GREEN if door['unlocked'] else door['color']
+        
+        # Door body
+        pygame.draw.rect(self.screen, color, rect)
+        pygame.draw.rect(self.screen, BLACK, rect, 5)
+        
+        # Door handle
+        handle_x = rect.x + rect.width - 20
+        pygame.draw.circle(self.screen, BLACK, (handle_x, rect.centery), 10)
+        
+        # Lock indicator
+        if not door['unlocked']:
+            pygame.draw.circle(self.screen, RED, (rect.centerx, rect.centery-30), 15)
+            lock_text = self.tiny_font.render("LOCKED", True, WHITE)
+            self.screen.blit(lock_text, (rect.centerx-25, rect.centery-35))
+    
+    def draw_inventory(self):
+        """Draw inventory at top"""
+        inv_y = 20
+        for i, item in enumerate(self.inventory):
+            x = 150 + i * 80
+            # Draw key in inventory
+            self.draw_key(item, x, inv_y)
+            
+            # Key ID label
+            id_text = self.tiny_font.render(str(item['key_id']), True, BLACK)
+            self.screen.blit(id_text, (x+25, inv_y+35))
+    
+    def draw_ui(self):
+        """Draw game UI"""
+        # Title
+        title = self.font.render(f"Level {self.level}", True, BLACK)
+        self.screen.blit(title, (SCREEN_WIDTH//2 - 80, 10))
+        
+        # Instructions
+        if not self.game_won:
+            if self.level_complete:
+                next_text = self.small_font.render("Click EXIT door to continue!", True, GREEN)
+            else:
+                next_text = self.small_font.render("Find keys to Unlock doors to Reach EXIT!", True, BLACK)
+            self.screen.blit(next_text, (20, SCREEN_HEIGHT - 60))
+        
+        # Progress
+        progress = f"Doors: {sum(1 for d in self.doors if d['unlocked'])}/{len(self.doors)}"
+        prog_text = self.small_font.render(progress, True, BLACK)
+        self.screen.blit(prog_text, (20, SCREEN_HEIGHT - 30))
+    
+    def draw_exit_door(self):
+        """Draw the final exit door"""
+        exit_rect = pygame.Rect(SCREEN_WIDTH//2 - 60, 350, 120, 250)
+        pygame.draw.rect(self.screen, GREEN, exit_rect)
+        pygame.draw.rect(self.screen, BLACK, exit_rect, 8)
+        
+        # Exit sign
+        exit_sign = self.font.render("EXIT", True, WHITE)
+        exit_rect_center = exit_rect.center
+        pygame.draw.rect(self.screen, (0, 100, 0), 
+                        (exit_rect_center[0]-60, exit_rect_center[1]-80, 120, 60))
+        self.screen.blit(exit_sign, (exit_rect_center[0]-35, exit_rect_center[1]-70))
+    
+    def handle_click(self, pos):
+        mx, my = pos
+        
+        if self.game_won:
+            return
+        
+        # Check keys
+        for key in self.keys:
+            if not key['collected'] and key['rect'].collidepoint(mx, my):
+                self.inventory.append(key.copy())
+                key['collected'] = True
+                # Play pickup sound here
+                print(f"Got {key['color']} key!")
+                return
+        
+        # Check doors
+        for door in self.doors:
+            if door['rect'].collidepoint(mx, my):
+                # Check if player has matching key
+                for inv_key in self.inventory:
+                    if (inv_key['key_id'] == door['key_id'] and 
+                        not door['unlocked']):
+                        door['unlocked'] = True
+                        # Remove key from inventory
+                        self.inventory.remove(inv_key)
+                        print(f"Door {door['key_id']} unlocked!")
+                        self.check_level_complete()
+                        return
+        
+        # Check exit door
+        if self.level_complete:
+            exit_rect = pygame.Rect(SCREEN_WIDTH//2 - 60, 350, 120, 250)
+            if exit_rect.collidepoint(mx, my):
+                self.next_level()
+    
+    def check_level_complete(self):
+        """Check if all doors unlocked"""
+        if all(door['unlocked'] for door in self.doors):
+            self.level_complete = True
+    
+    def next_level(self):
+        """Advance to next level"""
+        self.level += 1
+        if self.level > self.max_levels:
+            self.game_won = True
+            print("🎉 YOU ESCAPED ALL LEVELS! 🎉")
+        else:
+            self.inventory = []
+            self.reset_level()
+    
+    def run(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.handle_click(event.pos)
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.level = 1
+                        self.reset_level()
+                        self.game_won = False
+            
+            # Draw everything
+            self.screen.fill(WHITE)
+            self.draw_background()
+            
+            # Draw game elements
+            for obstacle in self.obstacles:
+                pygame.draw.rect(self.screen, BLACK, obstacle)
+            
+            for key in self.keys:
+                if not key['collected']:
+                    self.draw_key(key, key['rect'].x, key['rect'].y)
+            
+            for door in self.doors:
+                self.draw_door(door)
+            
+            if self.level_complete:
+                self.draw_exit_door()
+            
+            self.draw_inventory()
+            self.draw_ui()
+            
+            # Victory screen
+            if self.game_won:
+                win_text = self.font.render("YOU WON! 🎉 Press R to restart", True, GREEN)
+                text_rect = win_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+                self.screen.blit(win_text, text_rect)
+            
+            # Mouse cursor highlight
+            mouse_pos = pygame.mouse.get_pos()
+            highlight = pygame.Surface((30, 30), pygame.SRCALPHA)
+            pygame.draw.circle(highlight, (255, 255, 0, 100), (15, 15), 15)
+            self.screen.blit(highlight, (mouse_pos[0]-15, mouse_pos[1]-15))
+            
+            pygame.display.flip()
+            self.clock.tick(FPS)
+        
+        pygame.quit()
+        sys.exit()
+
+# Run the game
+if __name__ == "__main__":
+    game = Key_Door()
+    game.run()
