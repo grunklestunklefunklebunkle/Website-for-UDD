@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOOLTARDY - Puzzle/Strategy/Comedy Game | Dream Weavers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* SIDEBAR STYLES */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+         .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            color: white;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .sidebar-header h1 {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+         }
+        
+         .menu-item {
+            margin: 10px 0;
+        }
+
+         .menu-toggle {
+            width: 100%;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+         
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            padding-left: 30px;
+        }
+
+        .menu-toggle.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+            font-size: 12px;
+        }
+
+        .menu-toggle.active .arrow {
+            transform: rotate(180deg);
+        }
+
+         .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .submenu.active {
+            max-height: 500px;
+        }
+
+        .submenu a {
+            display: block;
+            padding: 12px 50px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .submenu a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: #fff;
+            padding-left: 55px;
+         }
+
+         .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item > a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .menu-item > a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding-left: 25px;
+        }
+
+        .menu-item > a .icon {
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .menu-item > a .arrow {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item.active > a .arrow {
+            transform: rotate(180deg);
+        }
+
+        .submenu {
+            list-style: none;
+            background: rgba(0, 0, 0, 0.2);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .menu-item.active .submenu {
+            max-height: 500px;
+        }
+
+        .submenu li a {
+            display: block;
+            padding: 12px 20px 12px 50px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .submenu li a:hover {
+            color: #fff;
+            padding-left: 60px;
+            border-left-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* HAMBURGER MENU */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: #667eea;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .hamburger:hover {
+            background: #764ba2;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px 20px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* HEADER/HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 60px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
+        }
+
+        .hero .tagline {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero .by-line {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* SECTION STYLES */
+        .section {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 38px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .section h2 + p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .section p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        /* TEAM SECTION */
+        .team-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .team-card .avatar {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .team-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .team-card .role {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .team-card p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+
+        /* FOOTER */
+        footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hero {
+                padding: 40px 20px;
+                margin-bottom: 30px;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .hero .tagline {
+                font-size: 20px;
+            }
+
+            .section {
+                padding: 30px 20px;
+                margin-bottom: 20px;
+            }
+
+            .section h2 {
+                font-size: 28px;
+            }
+
+            .team-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero .tagline {
+                font-size: 16px;
+            }
+
+            .section h2 {
+                font-size: 24px;
+            }
+
+            .section {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HAMBURGER MENU -->
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <nav class="sidebar open" id="sidebar">
+        <div class="sidebar-header">
+            <h1>⚡ FOOLTARDY</h1>
+            <p>Dream Weavers</p>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-item active">
+                <a onclick="toggleMenu(this)">
+                    <span>
+                        <span class="icon">🏠</span>
+                        Home
+                    </span>
+                    <span class="arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#hero">Welcome</a></li>
+                    <li><a href="#hero">Landing</a></li>
+                    <li><a href="#hero">Overview</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item">
+                <a onclick="toggleMenu(this)">
+                    <span>
+                        <span class="icon">🎮</span>
+                        Game Concept
+                    </span>
+                    <span class="arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#concept">About Game</a></li>
+                    <li><a href="#concept">Gameplay</a></li>
+                    <li><a href="#concept">Features</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item">
+                <a onclick="toggleMenu(this)">
+                    <span>
+                        <span class="icon">👥</span>
+                        Our Team
+                    </span>
+                    <span class="arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#team">Meet the Team</a></li>
+                    <li><a href="#team">Developers</a></li>
+                    <li><a href="#team">Artists</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item">
+                <a onclick="toggleMenu(this)">
+                    <span>
+                        <span class="icon">⚙️</span>
+                        More
+                    </span>
+                    <span class="arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href=" <div class="contact-info-section" id="contact-info">
+                <h2>📋 Contact Information</h2>
+                    <div a href">📍 Address</div>
+                    <div class="contact-value">Pantal, Arellano St. Dagupan City</div>
+                </div>
+                    <div class="contact-label">📱 Phone Number</div>
+                    <div class="contact-value">
+                        <a href="tel:+639948384423">+63 994 838 4423</a>
+                    </div>
+                </div>
+                    <div class="contact-label">📧 Email Address</div>
+                    <div class="contact-value">
+                        <a href="mailto:dreamwaver@gmail.com">dreamwaver@gmail.com</a>
+                    </div>
+                </div>
+
+                
+                        <a href="https://www.dreamwaver.com" target="_blank">www.dreamwaver.com</a>
+                    </div>
+                </div>
+                    <li><a href="#concept">About Us</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HERO SECTION -->
+        <section class="hero" id="hero">
+            <h1>⚡ FOOLTARDY ⚡</h1>
+            <p class="tagline">Puzzle • Strategy • Comedy</p>
+            <p class="by-line">by: Dream Weavers</p>
+        </section>
+
+        <!-- GAME CONCEPT SECTION -->
+        <section class="section" id="concept">
+            <h2>🎮 Game Concept</h2>
+            <p>Tagline: The Game That Tricks You!</p>
+            <p>
+                Fooltardy is a fun and unpredictable puzzle game where players must complete simple tasks—but with a twist. 
+                The game is designed to trick, confuse, and challenge the player's thinking. Instructions may be misleading, 
+                buttons may not behave normally, and players must think carefully before acting.
+            </p>
+            <p>
+                The main idea is to avoid being fooled by the game while solving each level. It combines humor, quick thinking, 
+                and problem-solving skills to create an engaging and entertaining experience. Each level presents new challenges 
+                designed to subvert player expectations and provide genuine laughs along the way.
+            </p>
+        </section>
+
+        <!-- GAME mechanics -->
+        <section class="section" id="concept">
+            <h2>🎮 Game mechanics</h2>
+           
+            <P>   ricky-Based Challenges:
+            Tasks Are Not Always What They Seem</P>
+            
+            <p>Time Pressure:
+                  Players Must Act Quickly</p>
+            
+            <p> Reverse Logic:
+                 Sometimes The Opposite Is Correct</p>
+            
+            <p>Memory Tests:
+                Remember Patterns Or Clues</p>
+                
+                Fool Meter:
+            Tracks Mistakes And Adds Humor
+            </p>
+
+ 
+        </section>
+
+        <!-- TEAM SECTION -->
+        <section class="section" id="team">
+            <h2>👥 Meet the Team</h2>
+            <p>Dream Weavers - Creators of Fooltardy</p>
+
+            <div class="team-container">
+                <div class="team-card">
+                   <!-- Juan David Navarro -->
+                <div class="box" id="box1">
+                     <div class="avatar">👨‍💻</div>
+                    <h3>Juan David Navarro</h3>
+                    <h4>Education:</h4>
+                    <h5>University de Dagupan (2025-2026)</h5>
+                    <h5>Student in Data Science and Multimedia Arts</h5>
+                    <h4>Job:</h4>
+                    <h5>💻 Programmer</h5>
+                     <h5>Architect of Fooltardy's core mechanics and game logic</h5>
+                </div>
+
+                <div class="team-card">
+                    <div class="avatar">🎨</div>
+                    <!-- Gabrielle Joyce Espiritu -->
+                <div class="box" id="box2">
+                    <h3>Gabrielle Joyce Espiritu</h3>
+                    <h4>Education:</h4>
+                    <h5>University de Dagupan (2025-2026)</h5>
+                    <h5>Student in Multimedia Arts</h5>
+                    <h5>Student Officer in SITE</h5>
+                    <h4>Job:</h4>
+                    <h5>💻 Programmer</h5>
+                    <h5>🎨 Artist</h5>
+                    <h5>Brings the visual magic and artistic direction to life</h5>
+                </div>
+
+                <div class="team-card">
+                    <div class="avatar">💻</div>
+                    <!-- Ronnie Grace R. Ferrer -->
+                <div class="box" id="box3">
+                    <h3>Ronnie Grace R. Ferrer</h3>
+                    <h4>Education:</h4>
+                    <h5>University de Dagupan (2025-2026)</h5>
+                    <h5>Student in Multimedia Arts</h5>
+                    <h4>Job:</h4>
+                    <h5>💻 Programmer</h5>
+                    <h5>🌐 Web Developer</h5>
+                    <h5>Creates the web experience and technical foundation</h5>
+                </div>
+
+                <div class="team-card">
+                    <div class="avatar">🖌️</div>
+                    <!-- Vanessa de Guzman -->
+                <div class="box" id="box4">
+                    <h3>Vanessa de Guzman</h3>
+                    <h4>Education:</h4>
+                    <h5>University de Dagupan (2025-2026)</h5>
+                    <h5>Student in Web & Mobile Application Development and Multimedia Arts</h5>
+                    <h4>Job:</h4>
+                    <h5>💻 Programmer</h5>
+                    <h5>🎨 Artist</h5>
+                    <h5>Crafts stunning visuals and interactive elements</h5>
+                </div>
+            </div>
+        </section>
+         <!-- FOOTER -->
+        <footer>
+            <p>&copy; 2026 FOOLTARDY - Dream Weavers. All Rights Reserved. | Puzzle • Strategy • Comedy</p>
+        </footer>
+    </main>
+
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Toggle Menu Items
+        function toggleMenu(element) {
+            const menuItem = element.parentElement;
+            
+            // Close other open menus
+            document.querySelectorAll('.menu-item.active').forEach(item => {
+                if (item !== menuItem) {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Toggle current menu
+            menuItem.classList.toggle('active');
+        }
+
+        // Close sidebar on link click (mobile)
+        document.querySelectorAll('.submenu a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.querySelector('.hamburger');
+            
+            if (!sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
