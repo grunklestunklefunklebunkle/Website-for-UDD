@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Directory - Sidebar Navigation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 300px;
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        /* Collapsible Sections */
+        .collapsible-section {
+            margin-bottom: 20px;
+        }
+
+        .collapsible-header {
+            background: #3d4758;
+            color: white;
+            padding: 12px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .collapsible-header:hover {
+            background: #667eea;
+            transform: translateX(5px);
+        }
+
+        .collapsible-header .arrow {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-header.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #1a202c;
+            border-left: 3px solid #667eea;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .collapsible-content.active {
+            max-height: 500px;
+        }
+
+        .collapsible-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #3d4758;
+            font-size: 14px;
+        }
+
+        .collapsible-item:last-child {
+            border-bottom: none;
+        }
+
+        .collapsible-item:hover {
+            background: #667eea;
+            padding-left: 25px;
+            color: white;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 300px;
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            color: white;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .content-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Team Members Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .team-card-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .team-card-role {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Toggle Button for Mobile */
+        .toggle-sidebar {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                padding: 0;
+                overflow: hidden;
+                transition: width 0.3s ease;
+            }
+
+            .sidebar.active {
+                width: 300px;
+                padding: 20px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .toggle-sidebar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-header h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #1a202c;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span style="color: #667eea;">📊</span> Team Directory
+        </div>
+
+        <!-- Skills Section -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection(this)">
+                <span>💻 Skills</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="collapsible-item" onclick="filterBySkill('Programmer')">🔹 Programmer</div>
+                <div class="collapsible-item" onclick="filterBySkill('Web Developer')">🌐 Web Developer</div>
+                <div class="collapsible-item" onclick="filterBySkill('Artist')">🎨 Artist</div>
+                <div class="collapsible-item" onclick="filterBySkill('Main Programmer')">⭐ Main Programmer</div>
+            </div>
+        </div>
+
+        <!-- Team Members Section -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection(this)">
+                <span>👥 Team Members</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-content active">
+                <div class="collapsible-item" onclick="selectMember('Juan David B. Navarro')">Juan David B. Navarro</div>
+                <div class="collapsible-item" onclick="selectMember('Ronnie Grace R. Ferrer')">Ronnie Grace R. Ferrer</div>
+                <div class="collapsible-item" onclick="selectMember('Vanessa De Guzman')">Vanessa De Guzman</div>
+                <div class="collapsible-item" onclick="selectMember('Gabrielle Joyce Espiritu')">Gabrielle Joyce Espiritu</div>
+            </div>
+        </div>
+
+        <!-- Clear Filters -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="clearFilters()" style="background: #e53e3e; margin-top: 20px;">
+                <span>🔄 Clear Filters</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1>Team Directory</h1>
+            <p>Explore our talented team members and their skills</p>
+        </div>
+
+        <div class="team-grid" id="teamGrid">
+            <!-- Team cards will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Toggle Sidebar Button for Mobile -->
+    <button class="toggle-sidebar" id="toggleBtn" onclick="toggleSidebar()">☰ Menu</button>
+
+    <script>
+        // Team Data
+        const teamData = [
+            {
+                name: 'Juan David B. Navarro',
+                role: 'Main Programmer',
+                skills: ['Main Programmer', 'Programmer']
+            },
+            {
+                name: 'Ronnie Grace R. Ferrer',
+                role: 'Web Developer & Programmer' ,
+                skills: ['Web Developer', 'Programmer']
+            },
+            {
+                name: 'Vanessa De Guzman',
+                role: 'Programmer & Artist',
+                skills: ['Programmer', 'Artist']
+            },
+            {
+                name: 'Gabrielle Joyce Espiritu',
+                role: 'Programmer & Artist' ,
+                skills: ['Programmer', 'Artist']
+            }
+        ];
+
+        let filteredTeam = [...teamData];
+
+        // Toggle Collapsible Sections
+        function toggleSection(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        // Filter by Skill
+        function filterBySkill(skill) {
+            filteredTeam = teamData.filter(member => member.skills.includes(skill));
+            renderTeamCards();
+            closeSidebar();
+        }
+
+        // Select Member
+        function selectMember(name) {
+            filteredTeam = teamData.filter(member => member.name === name);
+            renderTeamCards();
+            closeSidebar();
+        }
+
+        // Clear Filters
+        function clearFilters() {
+            filteredTeam = [...teamData];
+            renderTeamCards();
+            closeSidebar();
+        }
+
+        // Render Team Cards
+        function renderTeamCards() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = '';
+
+            if (filteredTeam.length === 0) {
+                grid.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center; font-size: 18px;">No team members found</p>';
+                return;
+            }
+
+            filteredTeam.forEach(member => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.innerHTML = `
+                    <div class="team-card-name">${member.name}</div>
+                    <div class="team-card-role">${member.role}</div>
+                    <div class="skills-container">
+                        ${member.skills.map(skill => `<span class="skill-badge">${skill}</span>`).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Toggle Sidebar on Mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close Sidebar
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+            }
+        }
+
+        // Initialize
+        renderTeamCards();
+    </script>
+</body>
+</html>
