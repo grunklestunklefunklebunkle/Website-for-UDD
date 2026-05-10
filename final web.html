@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Weavers Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #00b894;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+            --text-color: #2d3436;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #5f4ba8 100%);
+            padding: 20px 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            padding: 20px 30px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin: 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            font-size: 16px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--secondary-color);
+            padding-left: 35px;
+        }
+
+        .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-left-color: white;
+        }
+
+        .nav-link i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-submenu {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .nav-submenu.open {
+            max-height: 300px;
+        }
+
+        .nav-submenu .nav-link {
+            padding-left: 60px;
+            font-size: 14px;
+        }
+
+        .toggle-submenu {
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: auto;
+            transition: var(--transition);
+        }
+
+        .toggle-submenu.open {
+            transform: rotate(180deg);
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+
+        h2 {
+            font-size: 28px;
+        }
+
+        h3 {
+            font-size: 22px;
+        }
+
+        /* Home Page */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 80px 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: white;
+            color: var(--secondary-color);
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-top: 0;
+        }
+
+        /* About Page */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 30px 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .team-header h3 {
+            color: white;
+            margin: 0 0 10px 0;
+        }
+
+        .team-role {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .team-body {
+            padding: 20px;
+        }
+
+        .team-section {
+            margin-bottom: 15px;
+        }
+
+        .team-section h4 {
+            color: var(--primary-color);
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .team-section p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Projects Page */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+        }
+
+        .project-body {
+            padding: 20px;
+        }
+
+        .project-body h3 {
+            margin-top: 0;
+        }
+
+        .project-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .project-meta span {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        /* Skills Page */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .skill-member {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .skill-member:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .skill-member h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .skill-tag {
+            background: var(--light-color);
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid var(--primary-color);
+        }
+
+        /* Contact Page */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .contact-info {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .contact-info h3 {
+            margin-top: 0;
+        }
+
+        .contact-item {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .contact-item i {
+            font-size: 24px;
+            color: var(--secondary-color);
+            margin-right: 15px;
+            margin-top: 5px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .contact-item-content h4 {
+            margin: 0 0 5px 0;
+            color: var(--primary-color);
+        }
+
+        .contact-item-content p {
+            margin: 0;
+            color: #666;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 20px;
+        }
+
+        .social-links a:hover {
+            background: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .main-content {
+                margin-left: 220px;
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                width: 250px;
+                left: -250px;
+                transition: var(--transition);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid,
+            .projects-grid,
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .nav-link {
+                padding: 12px 20px;
+            }
+
+            .logo {
+                font-size: 18px;
+                padding: 15px 20px;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-wand-magic-sparkles"></i> Dream Weavers
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="about">
+                    <i class="fas fa-users"></i>
+                    <span>About Us</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="projects">
+                    <i class="fas fa-tasks"></i>
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="skills">
+                    <i class="fas fa-star"></i>
+                    <span>Skills</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="contact">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contact</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- HOME PAGE -->
+        <section id="home" class="page active">
+            <div class="hero">
+                <h1>Welcome to Dream Weavers</h1>
+                <p>A creative team of developers and artists passionate about bringing innovative ideas to life</p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="navigateTo('about')">Meet Our Team</button>
+                    <button class="btn btn-secondary" onclick="navigateTo('projects')">View Projects</button>
+                </div>
+            </div>
+
+            <h2>Why Choose Dream Weavers?</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Expert Programming</h3>
+                    <p>Skilled developers crafting robust and efficient solutions</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-palette"></i>
+                    <h3>Creative Design</h3>
+                    <p>Talented artists bringing visual excellence to every project</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Innovation First</h3>
+                    <p>Pushing boundaries with cutting-edge technologies and ideas</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Dedicated Support</h3>
+                    <p>Committed to delivering excellence on every project</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT US PAGE -->
+        <section id="about" class="page">
+            <h1>About Our Team</h1>
+            <p>Meet the talented individuals behind Dream Weavers - a group of passionate developers and artists from Universidad De Dagupan</p>
+
+            <div class="team-grid">
+                <!-- Juan David Navarro -->
+                <div class="team-card">
+                    <div class="team-header">
+                        <h3>Juan David Navarro</h3>
+                        <div class="team-role">Main Programmer</div>
+                    </div>
+                    <div class="team-body">
+                        <div class="team-section">
+                            <h4>Education</h4>
+                            <p>Universidad De Dagupan (2025-2026)</p>
+                            <p>Data Science and Multimedia Arts</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Role</h4>
+                            <p>Main Programmer</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Expertise</h4>
+                            <p>Full Stack Development, Data Science</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gabrielle Joyce Espiritu -->
+                <div class="team-card">
+                    <div class="team-header">
+                        <h3>Gabrielle Joyce Espiritu</h3>
+                        <div class="team-role">Programmer & Artist</div>
+                    </div>
+                    <div class="team-body">
+                        <div class="team-section">
+                            <h4>Education</h4>
+                            <p>Universidad De Dagupan (2025-2026)</p>
+                            <p>Multimedia Arts</p>
+                            <p>Student Officer in SITE</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Roles</h4>
+                            <p>Programmer, Artist</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Expertise</h4>
+                            <p>Web Development, Digital Art, UI/UX</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ronnie Grace R. Ferrer -->
+                <div class="team-card">
+                    <div class="team-header">
+                        <h3>Ronnie Grace R. Ferrer</h3>
+                        <div class="team-role">Web Developer & Programmer</div>
+                    </div>
+                    <div class="team-body">
+                        <div class="team-section">
+                            <h4>Education</h4>
+                            <p>Universidad De Dagupan (2024-2026)</p>
+                            <p>Multimedia Arts and Animation</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Roles</h4>
+                            <p>Web Developer, Programmer</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Expertise</h4>
+                            <p>Web Design, Animation, Frontend Development</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vanessa De Guzman -->
+                <div class="team-card">
+                    <div class="team-header">
+                        <h3>Vanessa De Guzman</h3>
+                        <div class="team-role">Programmer & Artist</div>
+                    </div>
+                    <div class="team-body">
+                        <div class="team-section">
+                            <h4>Education</h4>
+                            <p>Universidad De Dagupan (2025-2026)</p>
+                            <p>Development and Multimedia Arts</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Roles</h4>
+                            <p>Programmer, Artist</p>
+                        </div>
+                        <div class="team-section">
+                            <h4>Expertise</h4>
+                            <p>Backend Development, Digital Design</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS PAGE -->
+        <section id="projects" class="page">
+            <h1>Our Projects</h1>
+            <p>Explore the creative and technical projects we've developed</p>
+
+            <div class="projects-grid">
+                <!-- Fooltardy Project -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="project-body">
+                        <h3>Fooltardy</h3>
+                        <div class="project-meta">
+                            <span><i class="fas fa-tag"></i> Puzzle/Strategy/Comedy</span>
+                        </div>
+                        <p>An engaging puzzle-strategy game with comedic elements. Developed by Dream Weavers team to showcase creativity and technical skill in game development.</p>
+                        <p><strong>Team:</strong> Dream Weavers</p>
+                    </div>
+                </div>
+
+                <!-- Coming Soon -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="project-body">
+                        <h3>More Projects Coming Soon</h3>
+                        <div class="project-meta">
+                            <span><i class="fas fa-hourglass-end"></i> In Development</span>
+                        </div>
+                        <p>We're constantly working on new and exciting projects. Stay tuned for more innovative solutions and creative works from Dream Weavers!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS PAGE -->
+        <section id="skills" class="page">
+            <h1>Team Skills</h1>
+            <p>Discover the diverse talents and expertise of our team members</p>
+
+            <div class="skills-container">
+                <!-- Juan David Navarro Skills -->
+                <div class="skill-member">
+                    <h3>Juan David Navarro</h3>
+                    <p><strong>Role:</strong> Main Programmer</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">Data Science</span>
+                        <span class="skill-tag">Machine Learning</span>
+                        <span class="skill-tag">Backend Development</span>
+                        <span class="skill-tag">Database Design</span>
+                    </div>
+                </div>
+
+                <!-- Gabrielle Joyce Espiritu Skills -->
+                <div class="skill-member">
+                    <h3>Gabrielle Joyce Espiritu</h3>
+                    <p><strong>Roles:</strong> Programmer & Artist</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Web Development</span>
+                        <span class="skill-tag">Digital Art</span>
+                        <span class="skill-tag">UI/UX Design</span>
+                        <span class="skill-tag">Graphic Design</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Creative Leadership</span>
+                    </div>
+                </div>
+
+                <!-- Ronnie Grace R. Ferrer Skills -->
+                <div class="skill-member">
+                    <h3>Ronnie Grace R. Ferrer</h3>
+                    <p><strong>Roles:</strong> Web Developer & Programmer</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Web Design</span>
+                        <span class="skill-tag">Animation</span>
+                        <span class="skill-tag">HTML/CSS/JavaScript</span>
+                        <span class="skill-tag">Front-end Development</span>
+                        <span class="skill-tag">Responsive Design</span>
+                        <span class="skill-tag">Adobe Suite</span>
+                    </div>
+                </div>
+
+                <!-- Vanessa De Guzman Skills -->
+                <div class="skill-member">
+                    <h3>Vanessa De Guzman</h3>
+                    <p><strong>Roles:</strong> Programmer & Artist</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Backend Development</span>
+                        <span class="skill-tag">Digital Design</span>
+                        <span class="skill-tag">API Development</span>
+                        <span class="skill-tag">Database Management</span>
+                        <span class="skill-tag">Visual Design</span>
+                        <span class="skill-tag">Creative Problem Solving</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT PAGE -->
+        <section id="contact" class="page">
+            <h1>Get In Touch</h1>
+            <p>Have a project in mind? We'd love to hear from you. Reach out to Dream Weavers today!</p>
+
+            <div class="contact-container">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+
+                <div class="contact-info">
+                    <h3><i class="fas fa-info-circle"></i> Contact Information</h3>
+
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div class="contact-item-content">
+                            <h4>Phone Number</h4>
+                            <p><a href="tel:0948375532" style="color: #666; text-decoration: none;">0948-375-532</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="contact-item-content">
+                            <h4>Location</h4>
+                            <p>Universidad De Dagupan<br>Philippines</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div class="contact-item-content">
+                            <h4>Email</h4>
+                            <p>Contact us through social media or phone</p>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px;"><i class="fas fa-share-alt"></i> Follow Us</h3>
+                    <div class="social-links">
+                        <a href="https://facebook.com/dreamweaver" target="_blank" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://instagram.com/dreamweaver" target="_blank" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Page Navigation
+        function navigateTo(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Navigation Link Click Handler
+        document.querySelectorAll('[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page');
+                navigateTo(pageId);
+            });
+        });
+
+        // Mobile Menu Toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Contact Form Handler
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // Validate form
+            if (name && email && subject && message) {
+                alert(`Thank you, ${name}! Your message has been received.\n\nWe'll get back to you soon at ${email}`);
+                document.getElementById('contactForm').reset();
+            } else {
+                alert('Please fill in all fields');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
